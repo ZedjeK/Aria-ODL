@@ -1,0 +1,67 @@
+{
+    "manifest_version": 3,
+    "name": "Aria ODL",
+    "short_name": "Aria ODL",
+    "version": "0.6.0",
+    "description": "Correcteur français/anglais et traduction, 100 % locaux : correction en direct, traduction de sélection et de page entière.",
+    "icons": {
+        "16": "icons/icon-16.png",
+        "32": "icons/icon-32.png",
+        "48": "icons/icon-48.png",
+        "128": "icons/icon-128.png"
+    },
+    "background": {
+        "service_worker": "background.js",
+        "type": "module"
+    },
+    "action": {
+        "default_title": "Aria ODL",
+        "default_popup": "popup/popup.html",
+        "default_icon": {
+            "16": "icons/icon-16.png",
+            "32": "icons/icon-32.png"
+        }
+    },
+    "permissions": [
+        "offscreen",
+        "scripting",
+        "contextMenus",
+        "storage"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "content/checker.js"
+            ],
+            "css": [
+                "content/highlight.css"
+            ],
+            "all_frames": true,
+            "match_origin_as_fallback": true,
+            "run_at": "document_idle"
+        }
+    ],
+    "commands": {
+        "check-text": {
+            "suggested_key": {
+                "default": "Alt+Shift+V"
+            },
+            "description": "Vérifier le texte avec Aria ODL"
+        },
+        "translate-text": {
+            "suggested_key": {
+                "default": "Alt+Shift+L"
+            },
+            "description": "Traduire la sélection ou le champ avec Aria ODL"
+        }
+    },
+    "content_security_policy": {
+        "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; connect-src 'self'"
+    }
+}

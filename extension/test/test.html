@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Aria ODL — banc d'essai</title>
+    <link rel="stylesheet" href="test.css">
+    <script type="module" src="test.js"></script>
+</head>
+<body>
+    <header>
+        <h1><img src="../icons/icon-48.png" width="36" height="36" alt="" class="logo">Aria ODL <span class="tag">banc d'essai</span></h1>
+        <p class="sub">Correction FR/EN et traduction, 100&nbsp;% locales. Cette page vérifie que le navigateur accepte l'architecture.</p>
+    </header>
+
+    <main>
+        <section>
+            <h2>1. Environnement</h2>
+            <table id="env"><tbody></tbody></table>
+        </section>
+
+        <section>
+            <h2>2. Diagnostic complet</h2>
+            <p class="hint">Décharge les moteurs, puis lance chaque test deux fois : à froid (chargement compris) et à chaud.</p>
+            <div class="row">
+                <button id="run" class="primary">Lancer le diagnostic</button>
+                <button id="copy" disabled>Copier le rapport</button>
+                <span id="run-status" class="status"></span>
+            </div>
+            <table id="diag">
+                <thead>
+                    <tr><th>Test</th><th>Résultat</th><th>À froid</th><th>À chaud</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>3. Essai libre</h2>
+            <p class="hint">Écris : les fautes se soulignent toutes seules. Clic droit sur un mot souligné pour le corriger.</p>
+            <div class="editor">
+                <div id="backdrop" class="backdrop" aria-hidden="true"></div>
+                <textarea id="input" rows="6" spellcheck="false">Je pense que il viendras demain, les enfant sont prêt.</textarea>
+            </div>
+            <div class="row">
+                <label>Langue
+                    <select id="lang">
+                        <option value="auto">Automatique</option>
+                        <option value="fr">Français</option>
+                        <option value="en">Anglais</option>
+                    </select>
+                </label>
+                <button id="check" class="primary">Vérifier</button>
+                <button id="tr-fr-en">Traduire FR → EN</button>
+                <button id="tr-en-fr">Traduire EN → FR</button>
+                <button id="unload">Décharger les moteurs</button>
+            </div>
+            <p id="free-status" class="status"></p>
+            <div id="preview" class="preview"></div>
+            <ul id="matches" class="matches"></ul>
+        </section>
+    </main>
+
+    <div id="ctxmenu" class="ctxmenu" role="menu" hidden></div>
+</body>
+</html>

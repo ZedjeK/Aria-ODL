@@ -1,0 +1,46 @@
+[
+    {
+        "from": "fr",
+        "to": "en",
+        "version": "2.0",
+        "files": {
+            "lex": {
+                "name": "fren/lex.50.50.fren.s2t.bin.gz",
+                "expectedSha256Hash": "87c6752ea908f5f0347c10ac0cf7d80d9c2f4f20c81c90168f3e8230b56d4440",
+                "size": 4824120
+            },
+            "model": {
+                "name": "fren/model.fren.intgemm.alphas.bin.gz",
+                "expectedSha256Hash": "15f997bc0d13808b0b0fbd0786e684a3c8a52adcd8071844b76123fdacbf2b90",
+                "size": 31561787
+            },
+            "vocab": {
+                "name": "fren/vocab.fren.spm.gz",
+                "expectedSha256Hash": "783abf3abe075afdf8d85d233994bef2c3a064e935ab1bed946820aff6ac002a",
+                "size": 814404
+            }
+        }
+    },
+    {
+        "from": "en",
+        "to": "fr",
+        "version": "2.0",
+        "files": {
+            "vocab": {
+                "name": "enfr/vocab.enfr.spm.gz",
+                "expectedSha256Hash": "783abf3abe075afdf8d85d233994bef2c3a064e935ab1bed946820aff6ac002a",
+                "size": 814404
+            },
+            "lex": {
+                "name": "enfr/lex.50.50.enfr.s2t.bin.gz",
+                "expectedSha256Hash": "2585ed98d3af0bc949865aedeb390493d591f56870814376e73e4144c41ed059",
+                "size": 4372936
+            },
+            "model": {
+                "name": "enfr/model.enfr.intgemm.alphas.bin.gz",
+                "expectedSha256Hash": "6322e296d4fecfe395a8d5723da4ec37ecbe6d7613bb1dfcf4b28e2a47498b68",
+                "size": 31561787
+            }
+        }
+    }
+]

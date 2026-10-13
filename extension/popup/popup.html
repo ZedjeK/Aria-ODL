@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Aria ODL</title>
+    <link rel="stylesheet" href="popup.css">
+    <script type="module" src="popup.js"></script>
+</head>
+<body>
+    <header>
+        <span class="brand"><img src="../icons/icon-48.png" width="24" height="24" alt="">Aria ODL</span>
+        <span class="tag">100 % local</span>
+    </header>
+
+    <label class="switch">
+        <span>
+            <strong>Correction en direct</strong>
+            <small>Souligne les fautes pendant que tu écris</small>
+        </span>
+        <input type="checkbox" id="live">
+    </label>
+
+    <label class="switch" id="site-row">
+        <span>
+            <strong>Actif sur ce site</strong>
+            <small id="site-name">…</small>
+        </span>
+        <input type="checkbox" id="site">
+    </label>
+
+    <div class="actions">
+        <button id="check" class="primary">Vérifier le champ actif</button>
+        <button id="translate-page" class="primary">Traduire la page</button>
+    </div>
+    <div class="actions">
+        <button id="bench">Banc d'essai</button>
+    </div>
+
+    <section class="quick" aria-label="Traduction rapide">
+        <div class="quick-head">
+            <strong>Traduction</strong>
+            <span id="qt-status" class="qt-status"></span>
+        </div>
+        <div class="bubble">
+            <div class="bubble-head">
+                <span class="lang" id="qt-lang-a">FR / EN</span>
+                <button class="mini" id="qt-copy-a" title="Copier ce texte">Copier</button>
+            </div>
+            <textarea id="qt-a" rows="4" spellcheck="false" placeholder="Écris ou colle ton texte ici…"></textarea>
+        </div>
+        <button class="swap" id="qt-swap" title="Échanger les deux bulles">⇅</button>
+        <div class="bubble">
+            <div class="bubble-head">
+                <span class="lang" id="qt-lang-b">FR / EN</span>
+                <button class="mini" id="qt-copy-b" title="Copier ce texte">Copier</button>
+            </div>
+            <textarea id="qt-b" rows="4" spellcheck="false" placeholder="… ou écris ici : la bulle du haut se traduit."></textarea>
+        </div>
+    </section>
+    <p class="hint">Clic droit sur un mot souligné pour le corriger · Alt+Maj+V : panneau complet · Alt+Maj+L : traduire la sélection</p>
+</body>
+</html>

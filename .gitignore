@@ -1,0 +1,9 @@
+# Archives de l'extension produites pour les Releases
+*.zip
+*.crx
+*.pem
+
+# Divers
+*.log
+.DS_Store
+Thumbs.db

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -8 176 176" width="512" height="512">
+  <!-- Logo d'Aria ODL : le A glitché de la famille Aria, avec la bulle de texte orange
+       et sa vague de correction (outil de langage). -->
+  <defs>
+    <pattern id="s" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="1.5" fill="#7DF9FF" opacity="0.07"/>
+    </pattern>
+    <polygon id="a" points="30,130 70,30 90,30 130,130 110,130 80,54 50,130"/>
+    <clipPath id="bl"><rect x="0" y="72" width="80" height="90"/></clipPath>
+    <clipPath id="br"><rect x="80" y="72" width="80" height="90"/></clipPath>
+    <clipPath id="t"><rect x="0" y="0" width="160" height="72"/></clipPath>
+    <filter id="g" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3.2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="g2" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <polygon points="24,0 136,0 160,24 160,136 136,160 24,160 0,136 0,24" fill="#030812"/>
+  <polygon points="24,0 136,0 160,24 160,136 136,160 24,160 0,136 0,24" fill="url(#s)"/>
+  <polygon points="26,7 134,7 153,26 153,134 134,153 26,153 7,134 7,26" fill="none" stroke="#4D7CFF" stroke-width="1.8" opacity="0.65" filter="url(#g2)"/>
+  <g filter="url(#g)" stroke-linejoin="round" fill="none" stroke-width="5">
+    <g clip-path="url(#bl)" stroke="#7DF9FF"><use href="#a"/></g>
+    <g clip-path="url(#br)" stroke="#5C8BFF"><use href="#a"/></g>
+    <g transform="translate(7,0)"><g clip-path="url(#t)" stroke="#FFFFFF"><use href="#a"/></g></g>
+  </g>
+  <!-- Bulle de texte : une ligne écrite, puis la vague qui signale une faute. -->
+  <g filter="url(#g)" transform="translate(80 104) scale(1.15) translate(-80 -104)">
+    <path d="M68,92 h24 a5,5 0 0 1 5,5 v14 a5,5 0 0 1 -5,5 h-12 l-8,7 v-7 h-4 a5,5 0 0 1 -5,-5 v-14 a5,5 0 0 1 5,-5 z" fill="#FF8A1F"/>
+    <g opacity="0.78">
+      <rect x="69" y="98.2" width="22" height="2.8" rx="1.4" fill="#030812"/>
+      <path d="M69,108.2 q2.75,-3.4 5.5,0 t5.5,0 t5.5,0 t5.5,0" fill="none" stroke="#030812" stroke-width="2.6" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>
