@@ -53,8 +53,8 @@ Testé sur Opera GX 136 (Chromium 152). L'extension utilise le document offscree
 
 ## Sécurité
 
-- **Aucun accès réseau** : la politique de sécurité de l'extension limite les connexions à l'extension elle-même (`connect-src 'self'`). Même en cas de bug, elle ne peut rien envoyer à l'extérieur. Les moteurs et les modèles sont dans le dossier `extension`.
-- **Champs ignorés** : mots de passe, numéros de carte bancaire, codes à usage unique et éditeurs de code ne sont jamais lus.
+- **Aucun accès réseau** : la politique de sécurité de l'extension (`connect-src 'self'`) bride le service worker, le document offscreen et les moteurs : même en cas de bug, ils ne peuvent rien envoyer à l'extérieur. Le script injecté dans les pages n'est pas couvert par cette politique, mais il ne fait aucun appel réseau et ne communique qu'avec l'extension. Les moteurs et les modèles sont dans le dossier `extension`.
+- **Champs ignorés** : les champs de mot de passe, ceux que le site déclare comme numéro de carte bancaire ou code à usage unique (attribut `autocomplete`) et les éditeurs de code ne sont jamais lus. Un champ sensible mal balisé par le site peut être analysé, mais toujours en local.
 - **Modèles vérifiés** : l'empreinte SHA-256 publiée par Mozilla est contrôlée à chaque chargement d'un modèle.
 - **Rien d'enregistré** : les réglages restent dans le stockage local du navigateur ; les textes de la traduction rapide dans le stockage de session, effacé à la fermeture du navigateur.
 
