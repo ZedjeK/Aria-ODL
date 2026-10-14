@@ -143,6 +143,75 @@ if (isWindow) {
         await chrome.windows.update(me.id, { state });
         showState((await chrome.windows.get(me.id)).state);
     });
+    // Opera GX ne laisse pas étirer les bords de ce type de fenêtre : on pose nos propres poignées
+    // sur les bords et les coins, et on redimensionne la fenêtre nous-mêmes en suivant la souris.
+    const MIN_SIZE = { width: 380, height: 420 };
+    for (const edge of ["n", "s", "e", "w", "ne", "nw", "se", "sw"]) {
+        const handle = document.createElement("div");
+        handle.className = `resize resize-${edge}`;
+        handle.setAttribute("aria-hidden", "true");
+        document.body.append(handle);
+        handle.addEventListener("pointerdown", async (down) => {
+            if (down.button !== 0) {
+                return;
+            }
+            down.preventDefault();
+            handle.setPointerCapture(down.pointerId);
+            const start = await chrome.windows.get(me.id);
+            if (start.state !== "normal") {
+                await chrome.windows.update(me.id, { state: "normal" });
+            }
+            const origin = { x: down.screenX, y: down.screenY };
+            let pending = null;
+            let busy = false;
+            const apply = async () => {
+                if (busy || !pending) {
+                    return;
+                }
+                busy = true;
+                const bounds = pending;
+                pending = null;
+                try {
+                    await chrome.windows.update(me.id, bounds);
+                } finally {
+                    busy = false;
+                    apply();
+                }
+            };
+            const onMove = (move) => {
+                const dx = move.screenX - origin.x;
+                const dy = move.screenY - origin.y;
+                const bounds = { left: start.left, top: start.top, width: start.width, height: start.height };
+                if (edge.includes("e")) {
+                    bounds.width = Math.max(MIN_SIZE.width, start.width + dx);
+                }
+                if (edge.includes("s")) {
+                    bounds.height = Math.max(MIN_SIZE.height, start.height + dy);
+                }
+                if (edge.includes("w")) {
+                    bounds.width = Math.max(MIN_SIZE.width, start.width - dx);
+                    bounds.left = start.left + start.width - bounds.width;
+                }
+                if (edge.includes("n")) {
+                    bounds.height = Math.max(MIN_SIZE.height, start.height - dy);
+                    bounds.top = start.top + start.height - bounds.height;
+                }
+                pending = bounds;
+                apply();
+            };
+            const onUp = () => {
+                handle.removeEventListener("pointermove", onMove);
+                handle.removeEventListener("pointerup", onUp);
+                handle.removeEventListener("pointercancel", onUp);
+                document.body.classList.remove("resizing");
+            };
+            document.body.classList.add("resizing");
+            handle.addEventListener("pointermove", onMove);
+            handle.addEventListener("pointerup", onUp);
+            handle.addEventListener("pointercancel", onUp);
+        });
+    }
+
     // Retient la taille et la position choisies en étirant les bords ou en déplaçant la fenêtre.
     chrome.windows.onBoundsChanged.addListener((win) => {
         if (win.id !== me.id) {
