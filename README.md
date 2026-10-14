@@ -25,7 +25,7 @@ ODL = **O**util **D**e **L**angage.
 | **Panneau complet** | Toutes les fautes du champ actif ou de la sélection, avec leur explication | Grammalecte, Harper |
 | **Traduction de sélection** | Sélection ou champ : infobulle avec la traduction, sens inversable, Copier, Remplacer (Ctrl+Z annule) | Bergamot + modèles Mozilla |
 | **Traduction de page** | Toute la page, au fil du défilement, liens et mise en forme conservés, bascule original ↔ traduction | Bergamot + modèles Mozilla |
-| **Traduction rapide** | Deux bulles dans la popup : écrire dans l'une traduit vers l'autre, dans les deux sens | Bergamot + modèles Mozilla |
+| **Traduction rapide** | Deux bulles dans la popup ou dans une fenêtre séparée : écrire dans l'une traduit vers l'autre, dans les deux sens | Bergamot + modèles Mozilla |
 
 La langue est détectée toute seule. Le banc d'essai, accessible depuis la popup, mesure les temps de réponse et vérifie que le navigateur accepte l'extension.
 
@@ -49,7 +49,7 @@ Testé sur Opera GX 136 (Chromium 152). L'extension utilise le document offscree
 2. **Clic droit sur un mot souligné** : l'infobulle explique la faute et propose la correction. Ailleurs, le menu habituel du navigateur reste là.
 3. **Traduire un passage** : sélectionne-le, clic droit → *Aria ODL* → *Traduire avec Aria ODL* (ou Alt+Maj+L).
 4. **Traduire la page** : clic droit sur la page → *Traduire la page avec Aria ODL*, ou le bouton de la popup. La barre en haut à droite bascule entre la traduction et l'original ; la croix remet tout comme avant.
-5. **La popup** (clic sur l'icône) : correction en direct on/off, désactivation par site, traduction rapide et banc d'essai.
+5. **La popup** (clic sur l'icône) : correction en direct on/off, désactivation par site, traduction rapide et banc d'essai. Le bouton ⧉ l'ouvre dans une **fenêtre séparée**, redimensionnable, qui reste ouverte et suit l'onglet que tu regardes.
 
 ## Sécurité
 

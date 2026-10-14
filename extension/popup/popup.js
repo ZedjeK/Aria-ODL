@@ -1,33 +1,51 @@
 // Aria ODL — popup : réglages de la correction en direct (stockés localement)
 // et traduction rapide dans les deux sens entre deux bulles.
+// La même page sert aussi de fenêtre séparée (popup.html?mode=window).
 
 const DEFAULTS = { liveEnabled: true, disabledHosts: [] };
+const WINDOW_SIZE = { width: 560, height: 780 };
 const $ = (selector) => document.querySelector(selector);
+const isWindow = new URLSearchParams(location.search).get("mode") === "window";
+document.body.classList.toggle("window", isWindow);
 
-const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+let tab = null;
 let host = "";
-try {
-    const url = new URL(tab?.url ?? "");
-    if (url.protocol === "http:" || url.protocol === "https:") {
-        host = url.hostname;
+let settings = await chrome.storage.local.get(DEFAULTS);
+
+// Onglet visé : celui de la fenêtre courante pour la popup ; pour la fenêtre séparée,
+// l'onglet actif de la dernière fenêtre de navigation utilisée.
+async function findTab() {
+    if (!isWindow) {
+        return (await chrome.tabs.query({ active: true, currentWindow: true }))[0] ?? null;
     }
-} catch {
-    // page interne du navigateur
+    try {
+        const win = await chrome.windows.getLastFocused({ windowTypes: ["normal"], populate: true });
+        return win?.tabs?.find((t) => t.active) ?? null;
+    } catch {
+        return null;
+    }
 }
 
-let settings = await chrome.storage.local.get(DEFAULTS);
+function hostOf(target) {
+    try {
+        const url = new URL(target?.url ?? "");
+        return url.protocol === "http:" || url.protocol === "https:" ? url.hostname : "";
+    } catch {
+        return "";  // page interne du navigateur
+    }
+}
 
 function render() {
     $("#live").checked = settings.liveEnabled;
     const siteToggle = $("#site");
     const siteRow = $("#site-row");
+    $("#check").disabled = !host;
+    $("#translate-page").disabled = !host;
     if (!host) {
         $("#site-name").textContent = "Page interne : non prise en charge";
         siteToggle.checked = false;
         siteToggle.disabled = true;
         siteRow.classList.add("disabled");
-        $("#check").disabled = true;
-        $("#translate-page").disabled = true;
         return;
     }
     $("#site-name").textContent = host;
@@ -36,11 +54,23 @@ function render() {
     siteRow.classList.toggle("disabled", !settings.liveEnabled);
 }
 
+async function refreshTab() {
+    tab = await findTab();
+    host = hostOf(tab);
+    render();
+}
+
 async function save(patch) {
     settings = { ...settings, ...patch };
     await chrome.storage.local.set(patch);
     render();
+}
 
+// La popup se referme après une action ; la fenêtre séparée reste ouverte.
+function done() {
+    if (!isWindow) {
+        window.close();
+    }
 }
 
 $("#live").addEventListener("change", (event) => save({ liveEnabled: event.target.checked }));
@@ -51,21 +81,60 @@ $("#site").addEventListener("change", (event) => {
 });
 
 $("#check").addEventListener("click", async () => {
-    await chrome.runtime.sendMessage({ target: "sw", cmd: "open-panel", tabId: tab.id });
-    window.close();
+    await refreshTab();
+    if (tab) {
+        await chrome.runtime.sendMessage({ target: "sw", cmd: "open-panel", tabId: tab.id });
+    }
+    done();
 });
 
 $("#translate-page").addEventListener("click", async () => {
-    await chrome.runtime.sendMessage({ target: "sw", cmd: "translate-page", tabId: tab.id });
+    await refreshTab();
+    if (tab) {
+        await chrome.runtime.sendMessage({ target: "sw", cmd: "translate-page", tabId: tab.id });
+    }
+    done();
+});
+
+$("#bench").addEventListener("click", async () => {
+    await chrome.tabs.create({ url: chrome.runtime.getURL("test/test.html"), ...(tab ? { windowId: tab.windowId } : {}) });
+    done();
+});
+
+// Fenêtre séparée : une seule à la fois, on la remet au premier plan si elle existe déjà.
+$("#detach").addEventListener("click", async () => {
+    const { ariaWindowId } = await chrome.storage.session.get("ariaWindowId").catch(() => ({}));
+    if (ariaWindowId) {
+        try {
+            await chrome.windows.update(ariaWindowId, { focused: true });
+            window.close();
+            return;
+        } catch {
+            // fenêtre fermée entre-temps
+        }
+    }
+    const win = await chrome.windows.create({
+        url: chrome.runtime.getURL("popup/popup.html?mode=window"),
+        type: "popup",
+        ...WINDOW_SIZE,
+    });
+    await chrome.storage.session.set({ ariaWindowId: win.id }).catch(() => {});
     window.close();
 });
 
-$("#bench").addEventListener("click", () => {
-    chrome.tabs.create({ url: chrome.runtime.getURL("test/test.html") });
-    window.close();
-});
+if (isWindow) {
+    $("#detach").hidden = true;
+    // Suit l'onglet que tu regardes dans le navigateur.
+    chrome.tabs.onActivated.addListener(refreshTab);
+    chrome.tabs.onUpdated.addListener((tabId, change) => {
+        if (tabId === tab?.id && change.url) {
+            refreshTab();
+        }
+    });
+    chrome.windows.onFocusChanged.addListener(refreshTab);
+}
 
-render();
+await refreshTab();
 
 // --- Traduction rapide ---
 // Écrire dans une bulle traduit vers l'autre (sens détecté automatiquement).
