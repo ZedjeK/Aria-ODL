@@ -4,6 +4,7 @@
 
 const DEFAULTS = { liveEnabled: true, disabledHosts: [] };
 const WINDOW_SIZE = { width: 560, height: 780 };
+const BOUNDS_KEY = "windowBounds";
 const $ = (selector) => document.querySelector(selector);
 const isWindow = new URLSearchParams(location.search).get("mode") === "window";
 document.body.classList.toggle("window", isWindow);
@@ -113,10 +114,12 @@ $("#detach").addEventListener("click", async () => {
             // fenêtre fermée entre-temps
         }
     }
+    // Réouverture à la taille et à la position que tu lui avais données.
+    const saved = (await chrome.storage.local.get(BOUNDS_KEY))[BOUNDS_KEY];
     const win = await chrome.windows.create({
         url: chrome.runtime.getURL("popup/popup.html?mode=window"),
         type: "popup",
-        ...WINDOW_SIZE,
+        ...(saved ?? WINDOW_SIZE),
     });
     await chrome.storage.session.set({ ariaWindowId: win.id }).catch(() => {});
     window.close();
@@ -124,6 +127,32 @@ $("#detach").addEventListener("click", async () => {
 
 if (isWindow) {
     $("#detach").hidden = true;
+    const me = await chrome.windows.getCurrent();
+    const maximize = $("#maximize");
+    maximize.hidden = false;
+    const showState = (state) => {
+        const big = state === "maximized";
+        maximize.textContent = big ? "⤡" : "⤢";
+        maximize.title = big ? "Restaurer la taille" : "Agrandir la fenêtre";
+        maximize.setAttribute("aria-label", maximize.title);
+    };
+    showState(me.state);
+    maximize.addEventListener("click", async () => {
+        const current = await chrome.windows.get(me.id);
+        const state = current.state === "maximized" ? "normal" : "maximized";
+        await chrome.windows.update(me.id, { state });
+        showState((await chrome.windows.get(me.id)).state);
+    });
+    // Retient la taille et la position choisies en étirant les bords ou en déplaçant la fenêtre.
+    chrome.windows.onBoundsChanged.addListener((win) => {
+        if (win.id !== me.id) {
+            return;
+        }
+        showState(win.state);
+        if (win.state === "normal") {
+            chrome.storage.local.set({ [BOUNDS_KEY]: { left: win.left, top: win.top, width: win.width, height: win.height } });
+        }
+    });
     // Suit l'onglet que tu regardes dans le navigateur.
     chrome.tabs.onActivated.addListener(refreshTab);
     chrome.tabs.onUpdated.addListener((tabId, change) => {

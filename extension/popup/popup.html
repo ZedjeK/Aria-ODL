@@ -12,9 +12,11 @@
         <span class="head-right">
             <span class="tag">100 % local</span>
             <button id="detach" class="icon" title="Ouvrir dans une fenêtre séparée" aria-label="Ouvrir dans une fenêtre séparée">⧉</button>
+            <button id="maximize" class="icon" title="Agrandir la fenêtre" aria-label="Agrandir la fenêtre" hidden>⤢</button>
         </span>
     </header>
 
+    <div class="settings">
     <label class="switch">
         <span>
             <strong>Correction en direct</strong>
@@ -30,6 +32,7 @@
         </span>
         <input type="checkbox" id="site">
     </label>
+    </div>
 
     <div class="actions">
         <button id="check" class="primary">Vérifier le champ actif</button>
@@ -44,6 +47,7 @@
             <strong>Traduction</strong>
             <span id="qt-status" class="qt-status"></span>
         </div>
+        <div class="qt-grid">
         <div class="bubble">
             <div class="bubble-head">
                 <span class="lang" id="qt-lang-a">FR / EN</span>
@@ -57,7 +61,8 @@
                 <span class="lang" id="qt-lang-b">FR / EN</span>
                 <button class="mini" id="qt-copy-b" title="Copier ce texte">Copier</button>
             </div>
-            <textarea id="qt-b" rows="4" spellcheck="false" placeholder="… ou écris ici : la bulle du haut se traduit."></textarea>
+            <textarea id="qt-b" rows="4" spellcheck="false" placeholder="… ou écris ici : l'autre bulle se traduit."></textarea>
+        </div>
         </div>
     </section>
     <p class="hint">Clic droit sur un mot souligné pour le corriger · Alt+Maj+V : panneau complet · Alt+Maj+L : traduire la sélection</p>

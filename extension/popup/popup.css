@@ -46,6 +46,11 @@ header {
     padding: 1px 8px;
 }
 
+.settings {
+    display: block;
+    margin-bottom: 8px;
+}
+
 .switch {
     display: flex;
     align-items: center;
@@ -240,22 +245,32 @@ button.icon {
     line-height: 1;
 }
 
-/* Fenêtre séparée : la page prend toute la fenêtre et les bulles se partagent la hauteur. */
+/* Fenêtre séparée : tout suit la taille de la fenêtre quand tu étires ses bords. */
 body.window {
     width: auto;
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 body.window .quick {
     flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+body.window .qt-grid {
+    flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
 }
 
 body.window .bubble {
     flex: 1;
+    min-height: 90px;
     display: flex;
     flex-direction: column;
 }
@@ -268,4 +283,37 @@ body.window .bubble textarea {
 
 body.window .hint {
     margin-top: 8px;
+}
+
+/* Fenêtre large : réglages côte à côte, bulles côte à côte. */
+@media (min-width: 760px) {
+    body.window .settings {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    body.window .settings .switch {
+        margin-bottom: 0;
+    }
+
+    body.window .qt-grid {
+        flex-direction: row;
+        align-items: stretch;
+        gap: 6px;
+        margin-top: 8px;
+    }
+
+    body.window .qt-grid .swap {
+        align-self: center;
+        margin: 0;
+        transform: rotate(90deg);
+    }
+}
+
+/* Grande fenêtre : texte des bulles un peu plus grand. */
+@media (min-width: 1100px) and (min-height: 700px) {
+    body.window .bubble textarea {
+        font-size: 15px;
+    }
 }
